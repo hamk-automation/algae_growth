@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<div>
+		<form onsubmit="validate()" action="/bio/new" id="my-form" method="POST">
+			<p>Calibration PH: </p>
+      <div>
+        <input type="checkbox" onClick="unCheck1()" id="low" name="low">
+        <label>Low calibration with 4Ph</label>
+      </div>
+      <div>
+        <input type="checkbox" onClick="unCheck2()" id="medium" name="medium">
+        <label>Medium calibration with 7Ph</label>
+      </div>
+      <div>
+        <input type="checkbox" onClick="unCheck3()" id="high" name="high">
+        <label>High calibration with 10Ph</label>
+      </div>
+			<input type="submit" value="Submit">
+		</form>
+	</div>
+</body>
+<script type="text/javascript">
+var form   = document.getElementById("my-form");
+var low    = document.getElementById("low"),
+    medium = document.getElementById('medium'),
+    high   = document.getElementById('high');
+function unCheck1() {
+  if (low.checked == true){
+    medium.checked = false;
+    high.checked   = false;
+  }
+}
+function unCheck2() {
+  if (medium.checked == true){
+    low.checked = false;
+    high.checked   = false;
+  }
+}
+function unCheck3() {
+  if (high.checked == true){
+    medium.checked = false;
+    low.checked   = false;
+  }
+}
+function validate(){
+  console.log(form);
+}
+</script>
+</html>
