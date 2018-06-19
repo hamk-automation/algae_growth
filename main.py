@@ -4,31 +4,44 @@ import threading
 import RPi.GPIO as GPIO
 import sys
 import json
+import paho.mqtt.publish as publish
 from socketIO_client_nexus import SocketIO
 import timeit
 GPIO.cleanup()
 from lux        import measure_lux
-from PH_library import measure_PH,AtlasI2C
+from PH_library import AtlasI2C
 from pt100      import measure_temperature
 
+devices = AtlasI2C()
 mutex =threading.Lock() # add lock for 2 threads to avoid critical section
 def read():
     while True:
-        sleep(4)
+        lux1_value  = measure_lux(0x39)
+        lux2_value  = measure_lux(0x49)
+        temp1_value = measure_temperature(24)
+        temp2_value = measure_temperature(26)
+        tempCaliCommand = "T," + str(temp1_value)
+        try:
+            print(tempCaliCommand)
+            devices.query(tempCaliCommand)
+            sleep(1)
+        except ValueError:
+            print("Wrong Temperature Calibration Command")
         mutex.acquire() #Lock thread when reading
         try:
-            measurement = float(measure_PH()) # PH_value measured
+            measurement_PH = float(devices.query("R")) # Read PH_value
         except ValueError:
             measurement = "Cannot read while calibrating"
         mutex.release() #Remove lock
-        jsonData={"lux(0x39)":measure_lux(0x39),
-                  "lux(0x49)":measure_lux(0x49),
-                  "current_PH_value":measurement,
-                  "temperature(pin 24)":measure_temperature(24),
-                  "temperature(pin 26)":measure_temperature(26)};
+        jsonData={"lux1":lux1_value,
+                  "lux2":lux2_value,
+                  "ph":measurement_PH,
+                  "t1":temp1_value,
+                  "t2":temp2_value};
         newjson=json.dumps(jsonData, sort_keys=True);
+        publish.single("alykkaatpalvelut/tu_algae", newjson, hostname="hamkkontti.ddns.net")
         print(newjson)
-        sleep(4)
+        sleep(9)
 def calibrate_PH():
     print("hey")
     devices    = AtlasI2C();
@@ -60,7 +73,7 @@ def calibrate_PH():
     socketIO.wait()
     while True: #keep the thread alive to continue listening
         pass
-print("Press Ctrl-Z to kill all threads. Ctrl-C is only focus by main thread")
+print("Press Ctrl-Z to kill all threads. Ctrl-C is only noticed by main thread")
 #Use multithreading to read and listen to calibrating event at the same time
 read_thread      =threading.Thread(name="read"     ,target=read)
 calibrate_thread =threading.Thread(name="calibrate",target=calibrate_PH)

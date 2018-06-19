@@ -5,7 +5,7 @@
 </head>
 <body>
 	<div>
-		<form onsubmit="return validate();" action="/bio/new" id="my-form" method="POST">
+		<form onsubmit="return validate();" action="/bio/new_ph" id="my-form" method="POST">
 			<p>Calibration PH: </p>
       <div>
         <input type="checkbox" onClick="unCheck1()" id="low" name="low">
@@ -21,10 +21,23 @@
       </div>
 			<input type="submit" value="Submit">
 		</form>
+
+<!-- -------------------------------------------------------------------------->
+    <!-- <form action="/bio/new_temp">
+      <p>Temperature calibration:</p>
+      <div>
+        <input type="checkbox" onClick="start()" id="temperature" name="temperature">
+        <label>Calibrate with temperature?</label>
+				<div id="temp"></div>
+      </div>
+
+      <input type="submit" value="Apply">
+    </form> -->
 	</div>
 </body>
 <script type="text/javascript">
-var form   = document.getElementById("my-form");
+var temperature = document.getElementById("temperature");
+var form        = document.getElementById("my-form");
 var low    = document.getElementById("low"),
     medium = document.getElementById('medium'),
     high   = document.getElementById('high');
@@ -47,11 +60,26 @@ function unCheck3() {
   }
 }
 function validate(){
-if(low.checked == false && medium.checked == false && high.checked == false){
+if(low.checked==false && medium.checked==false && high.checked== false){
   alert("You haven't filled in anything");
   return false;
+};
 }
-return true;
-}
+// function start() {
+// 	if(temperature.checked == true){
+// 		console.log("so true");
+// 		a = `
+// 		   <div>
+// 		     <input type="checkbox">
+// 		     <label>Temperature measured by PT100</label>
+// 				 <input type="text" placeholder="Your own temperature">
+// 			 </div>`;
+// 		document.getElementById("temp").innerHTML = a;
+// 	};
+// 	if(temperature.checked == false){
+// 		document.getElementById("temp").innerHTML = '';
+// 	}
+//
+// }
 </script>
 </html>

@@ -24,7 +24,7 @@ app.set('view engine', 'ejs');
 app.get('/',(req,res)=>{
   res.render('index2');
 });
-app.post('/new',(req,res)=>{
+app.post('/new_ph',(req,res)=>{
   position = Object.getOwnPropertyNames(req.body)[0];
   console.log(position);
   console.log(typeof(position));
@@ -32,6 +32,9 @@ app.post('/new',(req,res)=>{
   res.redirect('/bio');
 
 });
+app.post('/new_temp',(req,res)=>{
+
+})
 
 server.listen(process.env.PORT || 9000, process.env.IP, function(){
     console.log("SERVER IS RUNNING!");
