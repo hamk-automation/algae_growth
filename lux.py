@@ -37,7 +37,3 @@ def measure_lux(address):
                     # print(ir)
                 else:
                     print("doesnt exist that sensor")
-# while True:
-#     measure_lux(0x39)
-#     measure_lux(0x49)
-#     time.sleep(3)

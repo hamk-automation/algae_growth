@@ -15,10 +15,6 @@ def measure_temperature(csPin = 24):
 	tempC     = max.readTemp()
 	while tempC < -200 or tempC > 200:
 		tempC = max.readTemp()
-	# jsonData  = {"temperature(pin {})".format(csPin):tempC}
 	return tempC
+	#Must remove GPIO.cleanup() because It can affect address of 2 lux sensors
 	#GPIO.cleanup()
-# while True:
-# 	print(measure_temperature(24))
-# 	print(measure_temperature(26))
-# 	time.sleep(3)

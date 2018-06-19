@@ -8,11 +8,12 @@ import paho.mqtt.publish as publish
 from socketIO_client_nexus import SocketIO
 import timeit
 GPIO.cleanup()
+
 from lux        import measure_lux
 from PH_library import AtlasI2C
 from pt100      import measure_temperature
 
-devices = AtlasI2C()
+devices = AtlasI2C() #PH_sensor instance
 mutex =threading.Lock() # add lock for 2 threads to avoid critical section
 def read():
     while True:
@@ -23,7 +24,9 @@ def read():
         tempCaliCommand = "T," + str(temp1_value)
         try:
             print(tempCaliCommand)
+            mutex.acquire() #Lock thread when calibration
             devices.query(tempCaliCommand)
+            mutex.release() #Remove thread
             sleep(1)
         except ValueError:
             print("Wrong Temperature Calibration Command")
@@ -71,7 +74,7 @@ def calibrate_PH():
             print("Wrong Command")
     socketIO.on('welcome',start_calibrate) #Listen to calibrating event
     socketIO.wait()
-    while True: #keep the thread alive to continue listening
+    while True: #keep the thread alive to continue listening to socket event
         pass
 print("Press Ctrl-Z to kill all threads. Ctrl-C is only noticed by main thread")
 #Use multithreading to read and listen to calibrating event at the same time
