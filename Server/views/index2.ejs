@@ -10,6 +10,16 @@
                 <%= success %>
             </div>
         <% } %>
+		<% if(error && error.length > 0){ %>
+	          <div class="alert alert-success" role="alert">
+	              <%= error %>
+	          </div>
+	      <% } %>
+		<% if(!success && !error){ %>
+            <div class="alert alert-success" role="alert">
+							No message is received. Try to recalibrate
+            </div>
+        <% } %>
 	</div>
 	<div>
 		<form onsubmit="return validate();" action="/bio/new_ph" id="my-form" method="POST">
