@@ -28,31 +28,34 @@ app.use(bodyParser.urlencoded({
 }));
 app.set('view engine', 'ejs');
 app.get('/',(req,res)=>{
-  res.render('index2');
+  res.render('home');
+});
+app.get('/instruction',(req,res)=>{
+  res.render('instruction');
 });
 io.on('connect',function(socket){
   console.log("Open the socket");
+  console.log(socket);
   app.post('/new_ph',(req,res)=>{
+    console.log(socket.connected);
     console.time('test');
     position = Object.getOwnPropertyNames(req.body)[0];
     console.log(position);
     console.log(typeof(position));
+    console.log(socket);
     io.emit('welcome', { "data":position });
     socket.on('success',function(){
       console.log("success");
       req.flash("success","Successful Calibration with " + position + " position !!!");
       console.log(res.locals);
-      // res.redirect('/bio');
-      //socket.removeAllListeners("success");
     });
     socket.on('error',function(){
       console.log("error");
       req.flash("error","Some error exists!! Try to recalibrate !!!");
-      // res.redirect('/bio');
-      //socket.removeAllListeners("error");
     });
     setTimeout(function(){
-      res.redirect('/bio');
+      //res.redirect('/bio');
+      res.redirect('/');
       socket.removeAllListeners("success");
       socket.removeAllListeners("error");
       console.timeEnd('test');

@@ -18,7 +18,6 @@
     "mongoose": "*",
     "cookie-parser": "*",
     "express-session": "*",
-    "socket.io": "*",
-    "pytalk": "*"
+    "socket.io": "*"
   }
 }
