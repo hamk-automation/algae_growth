@@ -10,8 +10,9 @@ GPIO.cleanup()
 
 from lux                import measure_lux
 from PH_library         import AtlasI2C
-from pt100              import measure_temperature
+from max31865           import measure_temperature
 from Adafruit_ADS1x15   import ADS1015
+
 
 devices = AtlasI2C() #PH_sensor instance
 adc     = ADS1015()  #PAR_sensor instance
@@ -38,14 +39,13 @@ def read():
         # Measure Temperature_ under water
         try:
             temp1_value = measure_temperature(24)
-            tempCaliCommand = "T," + str(temp1_value)
         except:
             temp1_value = -1
             print("MAX31865_1 crashes")
 
         # Measure Temperature_ above water level and sensor calibration to same
         try:
-            temp2_value = measure_temperature(26)-0.2
+            temp2_value = measure_temperature(26)
         except:
             temp2_value = -1
             print("MAX31865_2 crashes")
@@ -60,9 +60,13 @@ def read():
         #Measure PH_value after temperature calibration
         mutex.acquire() #Lock thread when reading
         try:
-            devices.query(tempCaliCommand)
+            if temp1_value >-200 and temp1_value<200 and temp1_value != -1:
+                tempCaliCommand = "T," + str(temp1_value)
+                devices.query(tempCaliCommand)
+            else:
+                print("Measure PH without temp calibration")
             measurement_PH = float(devices.query("R")) # Read PH_value
-        except ValueError:
+        except :
             measurement_PH = -1
             print("PH_sensor crashes")
         mutex.release() #Remove lock
@@ -77,7 +81,7 @@ def read():
         publish.single("alykkaatpalvelut/tu_algae", newjson, hostname="hamkkontti.ddns.net")
         publish.single("alykkaatpalvelut/tu_algae", newjson, hostname="iot.research.hamk.fi")
         print(newjson)
-        sleep(9)
+        sleep(5)
 
 def calibrate_PH():
     """
@@ -100,12 +104,16 @@ def calibrate_PH():
             command = commandList.get(a)
             print(command)
             mutex.acquire()
-            tempCaliCommand = "T," + str(measure_temperature(24))
-            devices.query(tempCaliCommand)
             devices.query(command)
+            sleep(0.1)
+            status = devices.query('cal,?')
+            status = status[-1]
+            socketIO.emit('success',status)
+            f = open("Server/status.txt","w+")
+            f.write(status)
+            f.close()
             print("Command Successful")
             mutex.release()
-            socketIO.emit('success')
         except :
             socketIO.emit("error")
             print("Wrong Command")

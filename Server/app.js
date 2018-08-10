@@ -5,11 +5,54 @@ var bodyParser     = require("body-parser"),
     flash          = require("connect-flash"),
     cookieParser   = require("cookie-parser"),
     session        = require("express-session"),
-    flash          = require("connect-flash"),
-    app            = express();
+    app            = express(),
+    fs             = require("fs");
 var server         = require("http").Server(app);
 var io             = require('socket.io')(server);
 var connected_socket;
+var status         = 0;
+var last_time      = "";
+var position       = "";
+fs.readFile("status.txt","utf8",(err,data)=>{
+  if (err) throw err;
+  status = data;
+})
+fs.readFile("history.txt","utf8",(err,data)=>{
+  if (err) throw err;
+  data = data.split(";");
+  position = data[0];
+  last_time= data[1];
+})
+function getDateTime() {
+
+    var date = new Date();
+
+    var hour = date.getHours();
+    hour = (hour < 10 ? "0" : "") + hour;
+
+    var min  = date.getMinutes();
+    min = (min < 10 ? "0" : "") + min;
+
+    var sec  = date.getSeconds();
+    sec = (sec < 10 ? "0" : "") + sec;
+
+    var year = date.getFullYear();
+
+    var month = date.getMonth();
+    // month = (month < 10 ? "0" : "") + month;
+    var monthArray = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
+    month = monthArray[month];
+
+    var day  = date.getDate();
+    day = (day < 10 ? "0" : "") + day;
+
+    last_time =  year +' '+ month + " " + day + "," + hour + ":" + min + "." + sec;
+    fs.writeFile("history.txt", position+";"+last_time, function(err) {
+    if(err) {
+        return console.log(err);
+    };
+});
+}
 app.use(express.static('public'));
 app.use(flash());
 app.use(session({
@@ -36,7 +79,7 @@ io.on("connection",(socket)=>{
   connected_socket = socket;
 });
 app.get('/',(req,res)=>{
-  res.render('home');
+  res.render('home',{status:status,last_position:position,last_time:last_time});
 });
 app.get('/instruction',(req,res)=>{
   res.render('instruction');
@@ -45,8 +88,10 @@ app.post('/new_ph',(req,res)=>{
   position = Object.getOwnPropertyNames(req.body)[0];
   res.io.emit('send_data', { "data":position });
   //console.log(connected_socket.connected);
-  connected_socket.on('success',function(){
+  connected_socket.on('success',function(message){
       console.log("success");
+      status = message;
+      getDateTime();
       req.flash("success",position);
     });
   connected_socket.on('error',function(){
@@ -59,7 +104,7 @@ app.post('/new_ph',(req,res)=>{
       connected_socket.removeAllListeners("error");
       res.redirect('/');
 
-    },2500)
+    },4000)
 });
 
 

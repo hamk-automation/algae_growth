@@ -3,27 +3,41 @@
 		<div class="alert alert-success" role="alert">
 			<h4>Success:</h4>
 			Successful calibration at <strong><%= success %></strong> position!!!
-		</div>
+
 		<% } %>
 		<% if(error && error.length > 0){ %>
 			<div class="alert alert-danger" role="alert">
 			<h4>Error:</h4>
 			Please try again.
-		</div>
+
 		<% } %>
 		<% if(success.length == 0 && error.length == 0 ){ %>
 			<div class="alert alert-info" role="alert">
 				<strong>Info:</strong> Calibration process is ready.
-			</div>
-	<% } %>
 
-<!-- 	<div class="alert alert-info" role="alert">
-		<strong>Info:</strong> Calibration process is ready.
-	</div> -->
+	<% } %>
+</div>
 
 	<div class="solution-header py-1 pb-md-4 mx-auto text-center">
-		<h1 class="display-4">Calibration</h1>
-		<!-- <p class="lead">The system will do the rest for you.</p> -->
+		<h1 class="display-4">Calibration: <span class="border border-primary rounded"><%=status%></span> / 3</h1>
+		<% if (last_position != "" && last_time != "") {%>
+		<div><i class="fas fa-clock"></i> Last calibration: <span class="text-success"><%=last_position%> position</span> in <span class="text-info"><%=last_time%></span>.</div>
+		<% }%>
+		<% if( status == 0){ %>
+			<div class=""><i class="far fa-lightbulb"></i> Start with Middle Calibration for Single Point.</div>
+		<% } %>
+	<% if( status == 1){ %>
+		<div class=""><i class="far fa-lightbulb"></i> High or Low Calibration for Two Point.</div>
+	<% } %>
+	<% if( status == 2 && last_position == "low"){ %>
+		<div class=""><i class="far fa-lightbulb"></i> High Calibration for Three Point.</div>
+	<% } %>
+	<% if( status == 2 && last_position == "high"){ %>
+		<div class=""><i class="far fa-lightbulb"></i> Low Calibration for Three Point.</div>
+	<% } %>
+	<% if( status == 3){ %>
+		<div class=""><i class="far fa-lightbulb"></i> Three Point Calibration is successfully.</div>
+	<% } %>
     </div>
     <div class="container mx-auto">
 		<form class="align-item-center" onsubmit="return validate();" action="/new_ph" id="my-form" method="POST">
@@ -48,7 +62,8 @@
 <!-- ---------------------------------------------------------------------------------------------------------------------------------- -->
 				<div class="box-shadow card mb-4">
 					<div class="card-header">
-						<h4 class="my-0 font-weight-normal">Medium</h4>
+						<h4 class="my-0 font-weight-normal">Middle</h4>
+						<p class="font-weight-small text-danger">(Reset Calibration to 1 point)</p>
 					</div>
 					<div class="card-body">
 						<label for="medium">
@@ -61,6 +76,7 @@
 						<span class="checkmark checkmark_medium"></span>
 					</label>
 				</div>
+<!-- ---------------------------------------------------------------------------------------------------------------------------------- -->
 				<div class="box-shadow card mb-4">
 					<div class="card-header">
 						<h4 class="my-0 font-weight-normal">High</h4>
@@ -78,7 +94,7 @@
 
 			</div>
 			<div class="mx-auto" style="width: 10%;">
-				<input class="btn btn-primary btn-lg" type="submit" value="Submit">
+				<input class="btn btn-primary btn-lg center-block" type="submit" value="Submit">
 			</div>
 
 		</form>
@@ -117,7 +133,7 @@ function unCheck3() {
 
 function validate(){
 	if(low.checked==false && medium.checked==false && high.checked== false){
-	  alert("You haven't filled in anything");
+	  alert("Check one");
 	  return false;
 	};
 };

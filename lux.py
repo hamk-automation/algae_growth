@@ -37,14 +37,7 @@ def measure_lux(address):
                     # print(ir)
                 else:
                     print("doesnt exist that sensor")
-def testLux():
-    while True:
-        print("Lux1 :")
-        print(measure_lux(0x39))
-        print("Lux2 :")
-        print(measure_lux(0x49))
-        time.sleep(1)
+
 #Uncomment to test
 
 #testLux()
-        

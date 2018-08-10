@@ -140,7 +140,10 @@ def main():
 					print(device.query(input))
 				except IOError:
 					print("Query failed \n - Address may be invalid, use List_addr command to see available addresses")
-
+def measure_PH():
+	devices = AtlasI2C()
+	#jsonData = {"current_PH_value":devices.query("R")}
+	return (devices.query("R"))
 
 # if __name__ == '__main__':
 # 	main()

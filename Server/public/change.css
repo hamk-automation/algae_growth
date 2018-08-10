@@ -17,14 +17,14 @@
 .custom-control-label{
 border:10px solid mistyrose;
 }
-.resize{
-	width: 25em;
-	height: auto;
-}
-.resize_button{
-	width: 4em;
-	height: auto;
-}
 .nav-link-head{
-  font-size:1.4rem;
+  font-size:1.2rem;
+}
+.btn{
+  height: 3em;
+}
+.border{
+  background: rgba(40,50,61,.62);
+  padding:0.06em 0.2em;
+  color:white;
 }
