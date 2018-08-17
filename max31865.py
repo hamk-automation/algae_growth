@@ -216,8 +216,8 @@ def measure_temperature(csPin):
 	max       = max31865(csPin,misoPin,mosiPin,clkPin)
    ##Calculate and read those sensors
 	tempC     = max.readTemp()
-	#while tempC < -200 or tempC > 200:
-	#	tempC = max.readTemp()
+	if tempC < -200 or tempC > 200:
+		return None 
 	return tempC
 	#Must remove GPIO.cleanup() because It can affect address of 2 lux sensors
 	#GPIO.cleanup()

@@ -12,7 +12,7 @@ var io             = require('socket.io')(server);
 var connected_socket;
 var status         = 0;
 var last_time      = "";
-var position       = "";
+var last_position  = "";
 fs.readFile("status.txt","utf8",(err,data)=>{
   if (err) throw err;
   status = data;
@@ -20,24 +20,20 @@ fs.readFile("status.txt","utf8",(err,data)=>{
 fs.readFile("history.txt","utf8",(err,data)=>{
   if (err) throw err;
   data = data.split(";");
-  position = data[0];
+  last_position = data[0];
   last_time= data[1];
 })
-function getDateTime() {
-
+function writeHistory() {
+    //get current date
     var date = new Date();
-
+    //get current time
     var hour = date.getHours();
     hour = (hour < 10 ? "0" : "") + hour;
-
     var min  = date.getMinutes();
     min = (min < 10 ? "0" : "") + min;
-
     var sec  = date.getSeconds();
     sec = (sec < 10 ? "0" : "") + sec;
-
     var year = date.getFullYear();
-
     var month = date.getMonth();
     // month = (month < 10 ? "0" : "") + month;
     var monthArray = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"];
@@ -47,7 +43,8 @@ function getDateTime() {
     day = (day < 10 ? "0" : "") + day;
 
     last_time =  year +' '+ month + " " + day + "," + hour + ":" + min + "." + sec;
-    fs.writeFile("history.txt", position+";"+last_time, function(err) {
+    // write calibration time and position to the history text file
+    fs.writeFile("history.txt", last_position+";"+last_time, function(err) {
     if(err) {
         return console.log(err);
     };
@@ -79,20 +76,20 @@ io.on("connection",(socket)=>{
   connected_socket = socket;
 });
 app.get('/',(req,res)=>{
-  res.render('home',{status:status,last_position:position,last_time:last_time});
+  res.render('home',{status:status,last_position:last_position,last_time:last_time});
 });
 app.get('/instruction',(req,res)=>{
   res.render('instruction');
 });
 app.post('/new_ph',(req,res)=>{
-  position = Object.getOwnPropertyNames(req.body)[0];
-  res.io.emit('send_data', { "data":position });
+  last_position = Object.getOwnPropertyNames(req.body)[0];
+  res.io.emit('send_data', { "data":last_position });
   //console.log(connected_socket.connected);
   connected_socket.on('success',function(message){
       console.log("success");
       status = message;
-      getDateTime();
-      req.flash("success",position);
+      writeHistory(); //store calibration history in a text file
+      req.flash("success",last_position);
     });
   connected_socket.on('error',function(){
       console.log("error");
@@ -104,7 +101,7 @@ app.post('/new_ph',(req,res)=>{
       connected_socket.removeAllListeners("error");
       res.redirect('/');
 
-    },4000)
+    },6000)
 });
 
 

@@ -1,0 +1,23 @@
+2018-08-16 15:33:16,827 - __main__ - INFO - Press Ctrl-Z to kill all threads. Ctrl-C is only noticed by main thread
+2018-08-16 16:55:44,953 - __main__ - INFO - Start measuring
+2018-08-16 16:55:45,721 - __main__ - WARNING - MAX31865_2 crashes
+2018-08-16 16:55:53,751 - __main__ - WARNING - MAX31865_2 crashes
+2018-08-16 16:56:01,733 - __main__ - WARNING - MAX31865_2 crashes
+2018-08-16 16:56:30,887 - __main__ - WARNING - MAX31865_2 crashes
+2018-08-16 16:56:38,902 - __main__ - WARNING - MAX31865_2 crashes
+2018-08-16 16:56:46,870 - __main__ - WARNING - MAX31865_2 crashes
+2018-08-16 16:56:54,892 - __main__ - WARNING - MAX31865_2 crashes
+2018-08-16 16:57:02,875 - __main__ - WARNING - MAX31865_2 crashes
+2018-08-16 16:57:10,842 - __main__ - WARNING - MAX31865_2 crashes
+2018-08-16 16:57:18,856 - __main__ - WARNING - MAX31865_2 crashes
+2018-08-16 16:57:26,851 - __main__ - WARNING - MAX31865_2 crashes
+2018-08-16 16:57:34,819 - __main__ - WARNING - MAX31865_2 crashes
+2018-08-16 16:57:42,785 - __main__ - WARNING - MAX31865_2 crashes
+2018-08-16 16:57:50,765 - __main__ - WARNING - MAX31865_2 crashes
+2018-08-16 16:57:58,745 - __main__ - WARNING - MAX31865_2 crashes
+2018-08-16 16:58:06,720 - __main__ - WARNING - MAX31865_2 crashes
+2018-08-16 16:58:14,885 - __main__ - WARNING - MAX31865_2 crashes
+2018-08-16 16:58:22,916 - __main__ - WARNING - MAX31865_2 crashes
+2018-08-16 16:58:30,894 - __main__ - WARNING - MAX31865_2 crashes
+2018-08-16 16:58:38,864 - __main__ - WARNING - MAX31865_2 crashes
+2018-08-16 16:58:49,302 - __main__ - INFO - Start measuring
