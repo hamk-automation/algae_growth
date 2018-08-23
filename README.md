@@ -1,1 +1,2 @@
-Nothing to see here, go away please.
+Smart Services Summer Project:
+Monitoring Algae Growth System
