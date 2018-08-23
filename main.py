@@ -34,23 +34,26 @@ def read():
     while True:
         # Measure Lux_ under water
         try:
-            lux1_value  = measure_lux(0x39)
+            lux1_value,ilux1_value  = measure_lux(0x29)
+            vlux1_value             = lux1_value - ilux1_value
+
         except:
-            lux1_value  = None
+            lux1_value,ilux1_value,vlux1_value  = None,None,None
             logger.warning("TSL2561_1 crashes")
 
         # Measure Lux_ above water level
         try:
-            lux2_value  = measure_lux(0x49)
+            lux2_value,ilux2_value  = measure_lux(0x49)
+            vlux2_value             = lux2_value - ilux2_value
         except:
-            lux2_value = None
+            lux2_value,ilux2_value,vlux2_value  = None,None,None
             logger.warning("TSL2561_2 crashes")
 
         # Measure Temperature_ under water
         try:
             temp1_value = measure_temperature(24)
             if temp1_value == None:
-                logger.warning("MAX31865_1 gives false value. Check PT100_1 connection.")
+                logger.warning("MAX31865_1 gives false value")
         except:
             temp1_value = None
             logger.warning("MAX31865_1 crashes")
@@ -63,20 +66,22 @@ def read():
             PAR_value   = None
             logger.warning("PAR_sensor crashes")
 
-        #Measure PH_value after temperature calibration
+
         mutex.acquire() #Lock thread when reading
-        # Measure Temperature_ above water level and sensor calibration to same
+        # Measure Temperature_ above water level
         try:
             temp2_value = measure_temperature(26)
             if temp2_value == None:
-                logger.warning("MAX31865_2 gives false value. Check PT100_2 connection.")
+                logger.warning("MAX31865_2 gives false value")
         except:
             temp2_value = None
             logger.warning("MAX31865_2 crashes")
+        #Measure PH_value after temperature calibration
         try:
             if temp1_value  != None:
                 tempCaliCommand = "T," + str(temp1_value)
                 devices.query(tempCaliCommand)
+                sleep(0.3)
             else:
                 logger.info("Measure PH without temp calibration")
             measurement_PH = float(devices.query("R")) # Read PH_value
@@ -85,16 +90,20 @@ def read():
             logger.warning("PH_sensor crashes")
         mutex.release() #Remove lock
         jsonData={"lux1":lux1_value,
+                  "ilux1":ilux1_value,
+                  "vlux1":vlux1_value,
                   "lux2":lux2_value,
+                  "ilux2":ilux2_value,
+                  "vlux2":vlux2_value,
                   "ph":measurement_PH,
                   "t1":temp1_value,
                   "t2":temp2_value,
                   "par":PAR_value,
 	              "location":"Karanoja"};
         newjson=json.dumps(jsonData, sort_keys=True);
-        publish.single("alykkaatpalvelut/tu_algae", newjson, hostname="hamkkontti.ddns.net")
+        #publish.single("alykkaatpalvelut/tu_algae", newjson, hostname="hamkkontti.ddns.net")
         publish.single("alykkaatpalvelut/tu_algae", newjson, hostname="iot.research.hamk.fi")
-        #print(newjson)
+        print(newjson)
         sleep(5)
 
 def calibrate_PH():
