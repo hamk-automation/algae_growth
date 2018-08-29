@@ -4,7 +4,7 @@
 - Create an IoT system for monitoring algae growth factor( light, temperature, pH) 24/24. 
 - Create a local website for calibrating pH probe with instruction and good UI
 
-### Component:
+### Components:
 - 2 TSL2561 (https://www.adafruit.com/product/439)
 - 2 Platinum RTD sensor and 2 sensor amplifier: MAX31865 (https://www.adafruit.com/product/3328)
 - pH kit from Atlas Scientific (https://www.atlas-scientific.com/product_pages/kits/ph-kit.html)
