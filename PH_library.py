@@ -8,7 +8,7 @@ import string     # helps parse strings
 
 import json
 
-from socketIO_client_nexus import SocketIO
+#from socketIO_client_nexus import SocketIO
 
 class AtlasI2C:
 	long_timeout = 1.5         	# the timeout needed to query readings and calibrations
